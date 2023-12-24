@@ -45,102 +45,20 @@ resources:
 pipelines:
   - name: {{ .Values.namePrefix }}_go_ci
     steps:
-    {{ if .Values.goConfig.binaryTargetRepository }}
       - name: build
-        type: GoBuild
+        type: Bash
         configuration:
           affinityGroup: {{ .Values.namePrefix }}_go_binary_ci
           environmentVariables:
             JFROG_CLI_BUILD_NAME: {{ .Values.namePrefix }}_go_binary_ci
             JFROG_CLI_BUILD_NUMBER: ${run_id}
-          integrations:
-            - name: {{ .Values.artIntegration }}
-          inputResources:
-            - name: {{ .Values.namePrefix }}_repo
-        {{ if .Values.goConfig.command }}
-          goCommand: {{ .Values.goConfig.command }}
-        {{ end }}
-        {{ if .Values.goConfig.sourceLocation }}
-          sourceLocation: {{ .Values.goConfig.sourceLocation }}
-        {{ end }}
-        {{ if .Values.goConfig.resolverRepo }}
-          resolverRepo: {{ .Values.goConfig.resolverRepo }}
-        {{ end }}
-        {{ if .Values.goConfig.outputLocation }}
-          outputLocation: {{ .Values.goConfig.outputLocation }}
-        {{ end }}
-        {{ if .Values.goConfig.outputFile }}
-          outputFile: {{ .Values.goConfig.outputFile }}
-        {{ end }}
+        execution:
+          onExecute:
+            - echo Hello pipleins
 
       - name: publish
-        type: GoPublishBinary
-        configuration:
-          affinityGroup: {{ .Values.namePrefix }}_go_binary_ci
-          environmentVariables:
-            JFROG_CLI_BUILD_NAME: {{ .Values.namePrefix }}_go_binary_ci
-            JFROG_CLI_BUILD_NUMBER: ${run_id}
-          integrations:
-            - name: {{ .Values.artIntegration }}
-          inputSteps:
-            - name: build
-        {{ if .Values.publishBuild }}
-          outputResources:
-            - name: {{ .Values.namePrefix }}_binary_info
-            - name: {{ .Values.namePrefix }}_binary_spec
-        {{ end }}
-        {{ if .Values.publishBuild }}
-          autoPublishBuildInfo: true
-        {{ end }}
-        {{ if and .Values.scanBuild .Values.publishBuild }}
-          forceXrayScan: true
-        {{ end }}
-          targetRepository: {{ .Values.goConfig.binaryTargetRepository }}
-
-      {{ if .Values.publishBuild }}
+        type: Bash
         execution:
-          onSuccess:
-            - write_output {{ .Values.namePrefix }}_binary_spec buildName="${JFROG_CLI_BUILD_NAME}"
-            - write_output {{ .Values.namePrefix }}_binary_spec buildNumber="${JFROG_CLI_BUILD_NUMBER}"
-      {{ end }}
-    {{ end }}
+          onExecute:
+            - echo Publish!!!
 
-    {{ if .Values.goConfig.moduleTargetRepository }}
-      - name: module
-        type: GoPublishModule
-        configuration:
-          environmentVariables:
-            JFROG_CLI_BUILD_NAME: {{ .Values.namePrefix }}_go_module_ci
-            JFROG_CLI_BUILD_NUMBER: ${run_id}
-          integrations:
-            - name: {{ .Values.artIntegration }}
-          inputResources:
-            - name: {{ .Values.namePrefix }}_repo
-        {{ if .Values.publishBuild }}
-          outputResources:
-            - name: {{ .Values.namePrefix }}_module_info
-            - name: {{ .Values.namePrefix }}_module_spec
-        {{ end }}
-        {{ if .Values.goConfig.sourceLocation }}
-          sourceLocation: {{ .Values.goConfig.sourceLocation }}
-        {{ end }}
-        {{ if .Values.goConfig.version }}
-          version: {{ .Values.goConfig.version }}
-        {{ end }}
-          targetRepository: {{ .Values.goConfig.moduleTargetRepository }}
-        {{ if .Values.goConfig.resolverRepo }}
-          resolverRepo: {{ .Values.goConfig.resolverRepo }}
-        {{ end }}
-        {{ if .Values.publishBuild }}
-          autoPublishBuildInfo: true
-        {{ end }}
-        {{ if and .Values.scanBuild .Values.publishBuild }}
-          forceXrayScan: true
-        {{ end }}
-      {{ if .Values.publishBuild }}
-        execution:
-          onSuccess:
-            - write_output {{ .Values.namePrefix }}_module_spec buildName="${JFROG_CLI_BUILD_NAME}"
-            - write_output {{ .Values.namePrefix }}_module_spec buildNumber="${JFROG_CLI_BUILD_NUMBER}"
-      {{ end }}
-    {{ end }}
