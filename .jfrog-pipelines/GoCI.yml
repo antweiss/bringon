@@ -22,7 +22,6 @@ pipelines:
         execution:
           onExecute:
             - echo Hello pipleins
-
       - name: publish
         type: Bash
         execution:
