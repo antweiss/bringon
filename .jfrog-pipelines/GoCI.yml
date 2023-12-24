@@ -8,39 +8,6 @@ resources:
       branches:
         include: {{ .Values.repo.branchPattern | default "main" }}
 
-{{ if .Values.publishBuild }}
-  {{ if .Values.goConfig.binaryTargetRepository }}
-  - name: {{ .Values.namePrefix }}_binary_info
-    type: BuildInfo
-    configuration:
-      sourceArtifactory: {{ .Values.artIntegration }}
-
-  - name: {{ .Values.namePrefix }}_binary_spec
-    type: FileSpec
-    configuration:
-      sourceArtifactory: {{ .Values.artIntegration }}
-      pattern: '{{ .Values.binaryBuildSpecPattern | default "*" }}'
-      buildName: ${JFROG_CLI_BUILD_NAME}
-      buildNumber: ${JFROG_CLI_BUILD_NUMBER}
-  {{ end }}
-
-  {{ if .Values.goConfig.moduleTargetRepository }}
-  - name: {{ .Values.namePrefix }}_module_info
-    type: BuildInfo
-    configuration:
-      sourceArtifactory: {{ .Values.artIntegration }}
-
-  - name: {{ .Values.namePrefix }}_module_spec
-    type: FileSpec
-    configuration:
-      sourceArtifactory: {{ .Values.artIntegration }}
-      pattern: '{{ .Values.moduleBuildSpecPattern | default "*" }}'
-      buildName: ${JFROG_CLI_BUILD_NAME}
-      buildNumber: ${JFROG_CLI_BUILD_NUMBER}
-  {{ end }}
-
-{{ end }}
-
 
 pipelines:
   - name: {{ .Values.namePrefix }}_go_ci
