@@ -1,13 +1,13 @@
 ## This string will prefix the resources and pipeline, allowing you to add
 ## the pipeline source multiple times with unique names.
-namePrefix: sample
+namePrefix: sc
 
 ## The name of your Artifactory integration
 artIntegration: myArtIntegrationName
 
 ##### Artifactory Build Info
 ## set this to `true` to publish builds
-#publishBuild: true
+publishBuild: false
 ## set this to `true` to scan the published build(s)
 #scanBuild: true
 ## When publishBuild is enabled, a FileSpec resource will be created
@@ -22,8 +22,8 @@ artIntegration: myArtIntegrationName
 
 ##### Repository Details
 repo:
-  path: org/repo
-  gitIntegration: myGitIntegration
+  path: antweiss/bringon
+  gitIntegration: mygh
   branchPattern: "^main$"
 
 goConfig:
