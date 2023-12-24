@@ -24,6 +24,9 @@ pipelines:
             - echo Hello pipleins
       - name: publish
         type: Bash
+        configuration:
+          inputSteps:
+          - name: build 
         execution:
           onExecute:
             - echo Publish!!!
