@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: bringon
+  description: A Build Registry
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    jfrog.io/pipeline-name: sc_go_ci
+spec:
+  type: service
+  lifecycle: production
+  owner: stagecentral
